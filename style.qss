@@ -1,0 +1,78 @@
+/* Base Styles */
+* {
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 14px;
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+/* Light Mode */
+QWidget {
+    background-color: #e6f7ff; /* Light blue background */
+    color: #003366; /* Dark blue text */
+}
+
+QPushButton {
+    background-color: #cce7ff; /* Light blue button */
+    color: #003366; /* Dark blue text */
+    border: 1px solid #99d6ff; /* Border */
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+QPushButton:hover {
+    background-color: #b3d9ff; /* Slightly darker blue on hover */
+}
+
+QLineEdit, QTextEdit {
+    background-color: #ffffff; /* White input fields */
+    color: #003366; /* Dark blue text */
+    border: 1px solid #99d6ff; /* Border */
+    border-radius: 5px;
+    padding: 5px;
+}
+
+QTextEdit#card {
+    padding: 18px; /* increase volume */
+}
+
+QGroupBox#card_container {
+    background-color: #e6f7ff; 
+    border: 1px solid #162447;
+    border-radius: 10px;
+    margin: 10px 0px 5px 10px;
+    margin-top: 30px;
+}
+
+QGroupBox::title {
+    color: white;
+    background-color: transparent; /* Avoid blending */
+    color: #0f3460;
+}
+
+/* Dark Mode */
+QWidget[theme="dark"] {
+    background-color: #1a1a2e; /* Dark blue background */
+    color: #e6f7ff; /* Light blue text */
+}
+
+QPushButton[theme="dark"] {
+    background-color: #162447; /* Darker blue button */
+    color: #e6f7ff; /* Light blue text */
+    border: 1px solid #1f4068; /* Border */
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+QPushButton[theme="dark"]:hover {
+    background-color: #1f4068; /* Slightly lighter blue on hover */
+}
+
+QLineEdit[theme="dark"], QTextEdit[theme="dark"] {
+    background-color: #0f3460; /* Dark input fields */
+    color: #e6f7ff; /* Light blue text */
+    border: 1px solid #1f4068; /* Border */
+    border-radius: 5px;
+    padding: 5px;
+}
