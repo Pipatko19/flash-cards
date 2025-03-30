@@ -2,7 +2,7 @@ from PySide6 import QtWidgets as qtw
 from PySide6 import QtCore as qtc
 from PySide6 import QtGui as qtg
 
-from flashcards.cards import CardWidget
+from flashcards.cards import CardWidget, NamedField, ScrollableGroupBox
 
 class Settings(qtw.QWidget):
     def __init__(self):
@@ -12,6 +12,9 @@ class Settings(qtw.QWidget):
 
         self.tags.field.setPlaceholderText('Comma separated')
         self.description.field.setPlaceholderText('Optional')
+        
+        self.csv_button.setObjectName('csv_button')
+        self.confirm_button.setObjectName('confirm_button')
 
         #resize options
         self.title.setMinimumSize(300, self.title.sizeHint().height())
@@ -19,11 +22,6 @@ class Settings(qtw.QWidget):
         self.title.setSizePolicy(qtw.QSizePolicy.Preferred, qtw.QSizePolicy.Fixed)
         self.tags.setSizePolicy(qtw.QSizePolicy.Preferred, qtw.QSizePolicy.Fixed)
         
-        self.csv_button.setMinimumSize(self.csv_button.sizeHint() + qtc.QSize(10, 0))
-        self.confirm_button.setMinimumSize(self.confirm_button.sizeHint() + qtc.QSize(10, 0))
-        
-        self.csv_button.setSizePolicy(qtw.QSizePolicy.Maximum, qtw.QSizePolicy.Maximum)
-        self.confirm_button.setSizePolicy(qtw.QSizePolicy.Maximum, qtw.QSizePolicy.Maximum)
         
         self._init_layouts()
 
@@ -35,7 +33,7 @@ class Settings(qtw.QWidget):
         self.csv_button = qtw.QPushButton('Import from CSV')
         self.confirm_button = qtw.QPushButton('Confirm')
         self.description = NamedField('Description', qtw.QTextEdit())
-        self.cards = Scrollable_GroupBox()
+        self.cards = ScrollableGroupBox()
         
     def _init_layouts(self):
         """Setting widgets to the main layout"""
@@ -57,48 +55,5 @@ class Settings(qtw.QWidget):
         main_layout.addWidget(self.cards, 3, 0, 1, 3)
         
         
-class NamedField(qtw.QWidget):
-    def __init__(self, name, field):
-        """Wraps a widget with a title
 
-        Args:
-            name (str): title of the widget
-            field (QWidget): the widget that gets wrapped
-        """
-        super().__init__()
-        layout = qtw.QVBoxLayout()
-        self.field = field
-        self.setLayout(layout)
-        layout.addWidget(qtw.QLabel(name))
-        layout.addWidget(field, 1)
-
-class Scrollable_GroupBox(qtw.QWidget):
-    def __init__(self):
-        """The container for card creation. 
-        GroupBox(for title) -> ScrollArea(scroll functionality) -> GroupBox(holding) -> Cards
-        """
-        super().__init__()
-        
-        #init
-        self.outer_container = qtw.QGroupBox()
-        self.outer_container.setTitle('Card count:')
-        self.outer_container.setObjectName('card_container')
-        self.outer_container.setLayout(qtw.QVBoxLayout())
-        
-        self._scrolls = qtw.QScrollArea()
-        self._scrolls.setWidgetResizable(True)
-
-        self._inner_container = qtw.QGroupBox()
-        self.main_layout = qtw.QVBoxLayout()
-        
-        #connecting
-        self.setLayout(qtw.QVBoxLayout())
-        self.outer_container.layout().addWidget(self._scrolls)
-        self._scrolls.setWidget(self._inner_container)
-        self.layout().addWidget(self.outer_container)
-        self._inner_container.setLayout(self.main_layout)
-
-        
-        for i in range(3):
-            self.main_layout.addWidget(CardWidget())
             
