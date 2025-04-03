@@ -3,6 +3,7 @@ from PySide6.QtCore import Qt, QMargins
 from PySide6 import QtWidgets as qtw
 from PySide6 import QtCore as qtc
 
+from functools import partial
 from flashcards.card_model import FlashCardsModel
 
 class ShadowedWidget(QWidget):
@@ -110,26 +111,26 @@ class ScrollableGroupBox(qtw.QWidget):
         self._inner_container.setLayout(self.main_layout)
             
         self.idx = 0
+        self.textedits = []
         
         for _ in range(3): self.add_card()
         
     def add_card(self):
+        """Create and configure a new card"""
         card = CardWidget()
         self.main_layout.addWidget(card)
         self.model.add_Flashcard()
         modeled_idx = self.model.index(self.idx)
         card.frontChangedSignal.connect(
-            lambda value, idx=modeled_idx, role=FlashCardsModel.QUESTION_ROLE: self.set_to_model(value, idx, role)
+            partial(self.on_change, modeled_idx, FlashCardsModel.QUESTION_ROLE) # text from signal
         )
         card.backChangedSignal.connect(
-            lambda value, idx=modeled_idx, role=FlashCardsModel.ANSWER_ROLE: self.set_to_model(value, idx, role)
+            partial(self.on_change, modeled_idx, FlashCardsModel.ANSWER_ROLE)
         )
+        self.textedits.append(card)
         self.idx += 1
-    
-    def pop_card(self):
-        
-    
-    def set_to_model(self, value, idx, role):
+
+    def on_change(self, idx, role, value):
         self.model.setData(idx, value, role)
     
 if __name__ == "__main__":

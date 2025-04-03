@@ -6,8 +6,8 @@ from PySide6.QtCore import Qt
 class FlashCardsModel(qtc.QAbstractListModel):
     QUESTION_ROLE = Qt.UserRole + 1
     ANSWER_ROLE = Qt.UserRole + 2
-    def __init__(self, flashcards: list = None, **kwargs):
-        super().__init__()
+    def __init__(self, flashcards: list = None, *args,**kwargs):
+        super().__init__(*args, **kwargs)
         self.flashcards = flashcards or []
                 
     def rowCount(self, parent = None):

@@ -2,7 +2,7 @@ from PySide6 import QtWidgets as qtw
 from PySide6 import QtCore as qtc
 from PySide6 import QtGui as qtg
 
-from flashcards.cards import CardWidget, NamedField, ScrollableGroupBox
+from flashcards.cards import NamedField, ScrollableGroupBox
 
 class Settings(qtw.QWidget):
     def __init__(self):
