@@ -3,7 +3,7 @@ from PySide6 import QtCore as qtc
 from PySide6 import QtGui as qtg
 
 from flashcards.settings.cards import NamedField, ScrollableGroupBox
-from flashcards.storage import save_to_file, load_from_file
+from flashcards.storage import save_to_file, load_from_file, FILENAME
 
 class Settings(qtw.QWidget):
     def __init__(self):
@@ -66,11 +66,11 @@ class Settings(qtw.QWidget):
         description = self.description.field.toPlainText()
         tags = self.tags.field.text()
         flashcards = self.cards.model.flashcards
-        save_to_file('flashcards.json', title=name, description=description, tags=tags, flashcards=flashcards)
+        save_to_file(FILENAME, title=name, description=description, tags=tags, flashcards=flashcards)
     
     def load_from_json(self):
         """Load settings from a JSON file"""
-        data = load_from_file('flashcards.json')
+        data = load_from_file(FILENAME)
         self.title.field.setText(data['title'])
         self.description.field.setPlainText(data['description'])
         self.tags.field.setText(data['tags'])

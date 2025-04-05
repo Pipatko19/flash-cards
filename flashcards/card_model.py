@@ -33,10 +33,11 @@ class FlashCardsModel(qtc.QAbstractListModel):
             case _:
                 return False
         self.dataChanged.emit(index, index)
-        #print(*(card.values() for card in self.flashcards), sep='\n')
+        print(*(card.values() for card in self.flashcards), sep='\n')
         return True
 
     def removeRow(self, row, parent = None):
+        row -= 1
         if 0 <= row < len(self.flashcards):
             self.beginRemoveRows(qtc.QModelIndex(), row, row)
             del self.flashcards[row]
@@ -54,3 +55,4 @@ class FlashCardsModel(qtc.QAbstractListModel):
         self.flashcards = data
         self.endResetModel()
         self.dataChanged.emit(self.index(0), self.index(len(self.flashcards) - 1))
+        

@@ -1,19 +1,28 @@
 {
-    "title": "Hello From the universe",
-    "description": "symphony of a lonely wizard",
-    "tags": "godot",
-    "flashcards": [
+  "sets": [
+    {
+      "title": "Hello From the universe",
+      "description": "symphony of a lonely wizard",
+      "tags": "tag",
+      "flashcards": [
         {
-            "question": "Hiii",
-            "answer": "How are you?"
+          "question": "Hiii",
+          "answer": "How are you?"
         },
         {
-            "question": "pretty good, thanks!",
-            "answer": "Yeah Dont worry mate"
+          "question": "pretty good, thanks!",
+          "answer": "Yeah Dont worry mate"
         },
         {
-            "question": "Aww thanks",
-            "answer": "YAYYY"
+          "question": "Aww thanks",
+          "answer": "YAYYY"
+        },
+        {
+          "question": "",
+          "answer": ""
         }
-    ]
+      ],
+      "id": "c7cbba55-96d5-4b27-8db1-26faa319bca9"
+    }
+  ]
 }
