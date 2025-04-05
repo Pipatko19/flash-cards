@@ -9,7 +9,7 @@ class FlashCardsModel(qtc.QAbstractListModel):
     def __init__(self, flashcards: list = None, *args,**kwargs):
         super().__init__(*args, **kwargs)
         self.flashcards = flashcards or []
-                
+    
     def rowCount(self, parent = None):
         return len(self.flashcards)
     
@@ -33,11 +33,24 @@ class FlashCardsModel(qtc.QAbstractListModel):
             case _:
                 return False
         self.dataChanged.emit(index, index)
-        print(*(card.values() for card in self.flashcards), sep='\n')
+        #print(*(card.values() for card in self.flashcards), sep='\n')
         return True
 
-    def add_Flashcard(self):
-        new_row = self.rowCount()
-        self.beginInsertRows(qtc.QModelIndex(), new_row, new_row)
+    def removeRow(self, row, parent = None):
+        if 0 <= row < len(self.flashcards):
+            self.beginRemoveRows(qtc.QModelIndex(), row, row)
+            del self.flashcards[row]
+            self.endRemoveRows()
+            return True
+        return False
+
+    def insertRow(self, row, parent = None):
+        self.beginInsertRows(qtc.QModelIndex(), row, row)
         self.flashcards.append({'question': None, 'answer': None})
-        self.endInsertRows
+        self.endInsertRows()
+
+    def overwrite_data(self, data):
+        self.beginResetModel()
+        self.flashcards = data
+        self.endResetModel()
+        self.dataChanged.emit(self.index(0), self.index(len(self.flashcards) - 1))

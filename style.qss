@@ -33,7 +33,7 @@ QPushButton#confirm_button:hover {
     background-color: #74dbbb;
 }
 
-QPushButton#csv_button {
+QPushButton#json_button {
     margin-top: 10px;
     margin-left: 10px;
 }

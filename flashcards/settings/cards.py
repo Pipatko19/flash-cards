@@ -35,17 +35,19 @@ class CardWidget(QWidget):
         
         # Main layout
         layout = QHBoxLayout(self)
-        
         margin = QMargins(20, 20, 20, 20)
 
         # Create QTextEdit widgets
         self.front_input = QTextEdit()
         self.front_input.setObjectName('card')
         self.front_input.setPlaceholderText(front_text)
+        self.front_input.setMinimumHeight(150)
         
         self.back_input = QTextEdit()
         self.back_input.setObjectName('card')
         self.back_input.setPlaceholderText(back_text)
+        self.back_input.setMinimumHeight(150)
+
 
         # Create ShadowedWidget containers for both front and back
         front_input_widget = ShadowedWidget(self.front_input)
@@ -92,6 +94,7 @@ class ScrollableGroupBox(qtw.QWidget):
         self.model = FlashCardsModel()
         
         #init
+        
         self._outer_container = qtw.QGroupBox()
         self._outer_container.setTitle('Card count:')
         self._outer_container.setObjectName('card_container')
@@ -110,8 +113,7 @@ class ScrollableGroupBox(qtw.QWidget):
         self.layout().addWidget(self._outer_container)
         self._inner_container.setLayout(self.main_layout)
             
-        self.idx = 0
-        self.textedits = []
+        self.textedits: list[CardWidget] = []
         
         for _ in range(3): self.add_card()
         
@@ -119,8 +121,9 @@ class ScrollableGroupBox(qtw.QWidget):
         """Create and configure a new card"""
         card = CardWidget()
         self.main_layout.addWidget(card)
-        self.model.add_Flashcard()
-        modeled_idx = self.model.index(self.idx)
+        self.model.insertRow(self.model.rowCount())
+        idx = len(self.textedits)
+        modeled_idx = self.model.index(idx)
         card.frontChangedSignal.connect(
             partial(self.on_change, modeled_idx, FlashCardsModel.QUESTION_ROLE) # text from signal
         )
@@ -128,10 +131,43 @@ class ScrollableGroupBox(qtw.QWidget):
             partial(self.on_change, modeled_idx, FlashCardsModel.ANSWER_ROLE)
         )
         self.textedits.append(card)
-        self.idx += 1
+
+    def remove_card(self):
+        """Remove the last card"""
+        last_textedit = self.textedits.pop()
+        self.layout().removeWidget(last_textedit)
+        last_textedit.deleteLater()
+        self.model.removeRow(self.model.rowCount())
 
     def on_change(self, idx, role, value):
+        """Update the model when the text in the card changes"""
         self.model.setData(idx, value, role)
+        card_count = len(self.textedits)
+        
+        if idx.row() == card_count - 1:
+            self.add_card()
+        elif idx.row() == card_count - 2 and value == '' and card_count > 3:
+            self.remove_card()
+    def populate_from_model(self, data):
+        """Populate the card with data"""
+        print('data: ', data)
+        self.model.overwrite_data(data)
+        for idx, card in enumerate(self.textedits):
+            if idx >= len(data):
+                break
+            card.front_input.setPlainText(data[idx]['question'])
+            card.back_input.setPlainText(data[idx]['answer'])
+    
+    # def keyPressEvent(self, event):
+    #     if event.key() == Qt.Key_Tab:
+    #         print('heloo')
+    #         focused_card = QApplication.focusWidget()
+    #         if focused_card in self.textedits:
+    #             print('fuck yeah')
+    #             cur_idx = self.textedits.index(focused_card)
+    #             self.textedits[cur_idx + 1].setFocus()
+    #     else:
+    #         return super().keyPressEvent(event)
     
 if __name__ == "__main__":
     app = QApplication([])

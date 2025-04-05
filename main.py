@@ -3,7 +3,7 @@ from PySide6 import QtCore as qtc
 from PySide6 import QtGui as qtg
 import sys
 
-from flashcards.main_settings import Settings
+from flashcards.settings.main_settings import Settings
 
 class MainWindow(qtw.QMainWindow):
     def __init__(self):
