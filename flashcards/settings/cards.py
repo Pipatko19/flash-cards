@@ -68,6 +68,9 @@ class CardWidget(QWidget):
         self.frontChangedSignal.emit(self.front_input.toPlainText())
     def _emit_back_text_changed(self):
         self.backChangedSignal.emit(self.back_input.toPlainText())
+    @property
+    def empty(self):
+        return self.front_input.toPlainText() == '' and self.back_input.toPlainText() == ''
     
 class NamedField(qtw.QWidget):
     def __init__(self, name, field):
@@ -142,12 +145,17 @@ class ScrollableGroupBox(qtw.QWidget):
     def on_change(self, idx, role, value):
         """Update the model when the text in the card changes"""
         self.model.setData(idx, value, role)
+        idx_num = idx.row()
+        cur_card = self.textedits[idx_num]
         card_count = len(self.textedits)
         
-        if idx.row() == card_count - 1:
+        if idx_num == card_count - 1:
             self.add_card()
-        elif idx.row() == card_count - 2 and value == '' and card_count > 3:
+            
+        elif idx_num == card_count - 2 and cur_card.empty:
             self.remove_card()
+        self._outer_container.setTitle(f'Card count: {len(self.textedits)}')
+            
     def populate_from_model(self, data):
         """Populate the card with data"""
         print('data: ', data)
