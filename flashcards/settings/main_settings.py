@@ -2,22 +2,25 @@ from PySide6 import QtWidgets as qtw
 from PySide6 import QtCore as qtc
 from PySide6 import QtGui as qtg
 
-from flashcards.settings.cards import NamedField, ScrollableGroupBox
+from flashcards.settings.cards import ScrollableGroupBox
 from flashcards.storage import save_to_file, load_from_file, FILENAME
+from flashcards.widgets import NamedField, TightenedButtons
 
 class Settings(qtw.QWidget):
-    def __init__(self):
+    def __init__(self, mw, id=None):
         """UI for creating and changing cards"""
         super().__init__()
+        self.mw = mw
+        
         self._init_widgets()
 
         self.tags.field.setPlaceholderText('Comma separated')
         self.description.field.setPlaceholderText('Optional')
         
         self.json_button.setObjectName('json_button')
-        self.confirm_button.setObjectName('confirm_button')
         
-        self.confirm_button.pressed.connect(self.save_settings)
+        self.saving_buttons.save.pressed.connect(self.save_settings)
+        self.saving_buttons.cancel.pressed.connect(self.cancel)
         self.json_button.pressed.connect(self.load_from_json)
 
         #resize options
@@ -26,7 +29,7 @@ class Settings(qtw.QWidget):
         self.title.setSizePolicy(qtw.QSizePolicy.Preferred, qtw.QSizePolicy.Fixed)
         self.tags.setSizePolicy(qtw.QSizePolicy.Preferred, qtw.QSizePolicy.Fixed)
         
-        self.load_from_json()
+        self.load_from_json(id)
         
         self._init_layouts()
 
@@ -36,7 +39,7 @@ class Settings(qtw.QWidget):
         self.tags = NamedField('Tags', qtw.QLineEdit())
 
         self.json_button = qtw.QPushButton('Import from CSV')
-        self.confirm_button = qtw.QPushButton('Save')
+        self.saving_buttons = TightenedButtons(['cancel', 'save'])
         self.description = NamedField('Description', qtw.QTextEdit())
         self.cards = ScrollableGroupBox()
         
@@ -57,7 +60,7 @@ class Settings(qtw.QWidget):
         main_layout.addWidget(self.tags, 1, 0)
         main_layout.addWidget(self.description, 0, 2, 2, 1)
         main_layout.addWidget(self.json_button, 2, 0, qtc.Qt.AlignLeft)
-        main_layout.addWidget(self.confirm_button, 2, 2, qtc.Qt.AlignRight)
+        main_layout.addWidget(self.saving_buttons, 2, 2, qtc.Qt.AlignRight)
         main_layout.addWidget(self.cards, 3, 0, 1, 3)
         
     def save_settings(self):
@@ -66,17 +69,29 @@ class Settings(qtw.QWidget):
         description = self.description.field.toPlainText()
         tags = self.tags.field.text()
         flashcards = self.cards.model.flashcards
-        save_to_file(FILENAME, title=name, description=description, tags=tags, flashcards=flashcards)
+        save_to_file(FILENAME, title=name, description=description, tags=tags, flashcards=flashcards, id=self.id)
+        self.mw.switch_widget()
+
     
-    def load_from_json(self):
+    def cancel(self):
+        """Cancel changes"""
+        self.mw.switch_widget()
+    def load_from_json(self, id):
         """Load settings from a JSON file"""
-        data = load_from_file(FILENAME)
+        print(id)
+        if id is None:
+            self.cards.add_card()
+            self.id = None
+            print('hi')
+            return 
+        data = load_from_file(FILENAME, id)
+        self.id = data['id']
         self.title.field.setText(data['title'])
         self.description.field.setPlainText(data['description'])
         self.tags.field.setText(data['tags'])
         
-        # Load flashcards into the model
-        self.cards.populate_from_model(data['flashcards'])
+        # Load flashFs into the model
+        self.cards.populate(data['flashcards'])
 
         
 

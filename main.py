@@ -12,16 +12,14 @@ class MainWindow(qtw.QMainWindow):
         
         self.setWindowTitle('FlashCards')
         self.setGeometry(qtc.QRect(0, 0, 756, 538)) #size not really important
-        self.settings = Settings()
-        self.landing_screen = LandingScreen()
-        self.setCentralWidget(Settings())
+        self.setCentralWidget(LandingScreen(self))
         self.show()
-    def switch_widget(self):
+    def switch_widget(self, id=None):
         """Switch the central widget"""
-        if self.centralWidget() == self.landing_screen:
-            self.setCentralWidget(self.settings)
+        if isinstance(self.centralWidget(), LandingScreen):
+            self.setCentralWidget(Settings(self, id))
         else:
-            self.setCentralWidget(self.landing_screen)
+            self.setCentralWidget(LandingScreen(self))
 
 
 if __name__ == '__main__':

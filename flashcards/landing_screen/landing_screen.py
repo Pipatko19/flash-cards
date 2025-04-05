@@ -3,6 +3,7 @@ from PySide6 import QtCore as qtc
 from PySide6 import QtGui as qtg
 from PySide6.QtCore import Qt
 
+from functools import partial
 import sys
 import os
 
@@ -14,11 +15,14 @@ print('-', *sys.path, '-', sep='\n')
 from flashcards.storage import load_sets, FILENAME
 
 class LandingScreen(qtw.QWidget):
-    def __init__(self):
+    def __init__(self, mw, *args):
         """Landing screen for the application"""
-        super().__init__()
+        super().__init__(*args)
         self.setWindowTitle('FlashCards')
         self.setGeometry(qtc.QRect(0, 0, 756, 538))
+        
+        self.mw = mw
+        
         self._init_widgets()
         self._init_layouts()
 
@@ -35,6 +39,8 @@ class LandingScreen(qtw.QWidget):
         self.cards.horizontalHeader().setSectionResizeMode(qtw.QHeaderView.Stretch)
         self.add_button = qtw.QPushButton('Add Card')
         self.add_button.setObjectName('add_button')
+    
+        self.add_button.pressed.connect(self.add_row)
 
     def _init_layouts(self):
         layout = qtw.QVBoxLayout()
@@ -49,12 +55,27 @@ class LandingScreen(qtw.QWidget):
         sets = load_sets(FILENAME)
         self.cards.setRowCount(len(sets))
         for row, set in enumerate(sets):
+            *set, id = set
             for col, item in enumerate(set):
                 self.cards.setItem(row, col, qtw.QTableWidgetItem(item))
-                
             edit_button = qtw.QPushButton('Edit')
+            edit_button.pressed.connect(partial(self.switch, id))
             self.cards.setCellWidget(row, 4, edit_button)
     
+    def switch(self, id):
+        """Switch the central widget"""
+        self.mw.switch_widget(id)
+    
+    def add_row(self):
+        """Add a row to the table"""
+        row_idx = self.cards.rowCount()
+        self.cards.insertRow(row_idx)
+        self.cards.setRowHeight(row_idx, 50)
+        for col in range(self.cards.columnCount()):
+            self.cards.setItem(row_idx, col, qtw.QTableWidgetItem(''))
+            edit_button = qtw.QPushButton('Edit')
+            edit_button.pressed.connect(partial(self.switch, None))
+            self.cards.setCellWidget(row_idx, 4, edit_button)
 
 if __name__ == '__main__':
     import sys

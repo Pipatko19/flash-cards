@@ -21,7 +21,22 @@ QPushButton {
     padding: 5px 10px;
 }
 
-QPushButton#confirm_button {
+
+
+QPushButton#cancel {
+    margin-top: 10px;
+    margin-right: 10px;
+
+    background-color: #acb8b4;
+    border: 1px solid #676767;
+}
+QPushButton#cancel:hover {
+
+    background-color: #989898;
+    border: 1px solid #555454;
+}
+
+QPushButton#save {
     margin-top: 10px;
     margin-right: 10px;
 
@@ -29,7 +44,7 @@ QPushButton#confirm_button {
     border: 1px solid #3ed6a7;
 }
 
-QPushButton#confirm_button:hover {
+QPushButton#save:hover {
     background-color: #74dbbb;
 }
 

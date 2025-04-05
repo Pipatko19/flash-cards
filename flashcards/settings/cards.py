@@ -6,23 +6,7 @@ from PySide6 import QtCore as qtc
 from functools import partial
 from flashcards.card_model import FlashCardsModel
 
-class ShadowedWidget(QWidget):
-    def __init__(self, widget, parent=None):
-        """Adds a shadow to the widget"""
-        super().__init__(parent)
-        
-        # Apply the shadow effect to this widget
-        shadow_effect = QGraphicsDropShadowEffect(self)
-        shadow_effect.setOffset(0, 3)
-        shadow_effect.setBlurRadius(20)
-        shadow_effect.setColor(Qt.gray)
-        
-        widget.setGraphicsEffect(shadow_effect)
-        
-        # Set the layout for the widget
-        layout = QHBoxLayout()
-        self.setLayout(layout)
-        layout.addWidget(widget)
+from flashcards.widgets import ShadowedWidget
 
 class CardWidget(QWidget):
     frontChangedSignal = qtc.Signal(str)
@@ -72,20 +56,7 @@ class CardWidget(QWidget):
     def empty(self):
         return self.front_input.toPlainText() == '' and self.back_input.toPlainText() == ''
     
-class NamedField(qtw.QWidget):
-    def __init__(self, name, field):
-        """Wraps a widget with a title
 
-        Args:
-            name (str): title of the widget
-            field (QWidget): the widget that gets wrapped
-        """
-        super().__init__()
-        layout = qtw.QVBoxLayout()
-        self.field = field
-        self.setLayout(layout)
-        layout.addWidget(qtw.QLabel(name))
-        layout.addWidget(field, 1)
 
 class ScrollableGroupBox(qtw.QWidget):
     def __init__(self):
@@ -94,7 +65,7 @@ class ScrollableGroupBox(qtw.QWidget):
         """
         super().__init__()
         
-        self.model = FlashCardsModel()
+        self.model = FlashCardsModel(self)
         
         #init
         
@@ -117,9 +88,7 @@ class ScrollableGroupBox(qtw.QWidget):
         self._inner_container.setLayout(self.main_layout)
             
         self.textedits: list[CardWidget] = []
-        
-        for _ in range(3): self.add_card()
-        
+                
     def add_card(self):
         """Create and configure a new card"""
         card = CardWidget()
@@ -156,16 +125,21 @@ class ScrollableGroupBox(qtw.QWidget):
             self.remove_card()
         self._outer_container.setTitle(f'Card count: {len(self.textedits)}')
             
-    def populate_from_model(self, data):
+    def populate(self, data: list[dict[str, str]]):
         """Populate the card with data"""
-        print('data: ', data)
+        print('-----data-----', *data, '--------------', sep='\n')
+        for row in range(len(data)):
+            self.add_card()
         self.model.overwrite_data(data)
         for idx, card in enumerate(self.textedits):
             if idx >= len(data):
                 break
+            card.blockSignals(True)
             card.front_input.setPlainText(data[idx]['question'])
             card.back_input.setPlainText(data[idx]['answer'])
-    
+            card.blockSignals(False)
+        self._outer_container.setTitle(f'Card count: {len(self.textedits)}')
+
     # def keyPressEvent(self, event):
     #     if event.key() == Qt.Key_Tab:
     #         print('heloo')

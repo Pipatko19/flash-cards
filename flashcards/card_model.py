@@ -6,9 +6,13 @@ from PySide6.QtCore import Qt
 class FlashCardsModel(qtc.QAbstractListModel):
     QUESTION_ROLE = Qt.UserRole + 1
     ANSWER_ROLE = Qt.UserRole + 2
-    def __init__(self, flashcards: list = None, *args,**kwargs):
+    def __init__(self, *args,**kwargs):
         super().__init__(*args, **kwargs)
-        self.flashcards = flashcards or []
+        self.flashcards = []
+    
+    @property
+    def empty(self):
+        return self.flashcards == []
     
     def rowCount(self, parent = None):
         return len(self.flashcards)
@@ -33,7 +37,7 @@ class FlashCardsModel(qtc.QAbstractListModel):
             case _:
                 return False
         self.dataChanged.emit(index, index)
-        print(*(card.values() for card in self.flashcards), sep='\n')
+        #print(*(card.values() for card in self.flashcards), sep='\n')
         return True
 
     def removeRow(self, row, parent = None):
