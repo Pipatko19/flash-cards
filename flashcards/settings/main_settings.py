@@ -3,8 +3,8 @@ from PySide6 import QtCore as qtc
 from PySide6 import QtGui as qtg
 
 from flashcards.settings.cards import ScrollableGroupBox
-from flashcards.storage import save_to_file, load_from_file, FILENAME
-from flashcards.widgets import NamedField, TightenedButtons
+from flashcards.storage import save_to_file, get_set_by_id, FILENAME
+from flashcards.widgets import NamedField, ButtonGroup
 
 class Settings(qtw.QWidget):
     def __init__(self, mw, id=None):
@@ -39,7 +39,7 @@ class Settings(qtw.QWidget):
         self.tags = NamedField('Tags', qtw.QLineEdit())
 
         self.json_button = qtw.QPushButton('Import from CSV')
-        self.saving_buttons = TightenedButtons(['cancel', 'save'])
+        self.saving_buttons = ButtonGroup(['cancel', 'save'])
         self.description = NamedField('Description', qtw.QTextEdit())
         self.cards = ScrollableGroupBox()
         
@@ -84,7 +84,7 @@ class Settings(qtw.QWidget):
             self.id = None
             print('hi')
             return 
-        data = load_from_file(FILENAME, id)
+        data = get_set_by_id(FILENAME, id)
         self.id = data['id']
         self.title.field.setText(data['title'])
         self.description.field.setPlainText(data['description'])

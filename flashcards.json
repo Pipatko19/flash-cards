@@ -1,80 +1,80 @@
 {
-  "sets": [
-    {
-      "title": "second life",
-      "description": "A story about a little squid and its parents going to the space war",
-      "tags": "death, war",
-      "flashcards": [
+    "sets": [
         {
-          "question": "Hey",
-          "answer": "Ho"
+            "title": "second life",
+            "description": "A story about a little squid and its parents going to the space war",
+            "tags": "death, war",
+            "flashcards": [
+                {
+                    "question": "Hey",
+                    "answer": "Ho"
+                },
+                {
+                    "question": "What is the capital of France?",
+                    "answer": "Paris"
+                },
+                {
+                    "question": "What is the capital of Spain?",
+                    "answer": "Madrid"
+                },
+                {
+                    "question": "What is the capital of Italy?",
+                    "answer": "Rome"
+                },
+                {
+                    "question": "What is the capital of Germany?",
+                    "answer": "Berlin"
+                }
+            ],
+            "id": "d19fcd00-cc71-41e2-b42e-19ccbeefae6e"
         },
         {
-          "question": "What is the capital of France?",
-          "answer": "Paris"
+            "title": "Do",
+            "description": "Overwrite",
+            "tags": "Not",
+            "flashcards": [
+                {
+                    "question": "Please",
+                    "answer": "Begging"
+                },
+                {
+                    "question": "You",
+                    "answer": "lot"
+                },
+                {
+                    "question": null,
+                    "answer": null
+                }
+            ],
+            "id": "13ab9457-216b-40aa-818b-8d05db1e3ebc"
         },
         {
-          "question": "What is the capital of Spain?",
-          "answer": "Madrid"
+            "title": "sunky",
+            "description": "wanky",
+            "tags": "gunky",
+            "flashcards": [
+                {
+                    "question": "mumpy",
+                    "answer": "cypy"
+                },
+                {
+                    "question": null,
+                    "answer": null
+                }
+            ],
+            "id": "de229a5e-b9a4-4812-8ac7-dbd8ef5b79ca"
         },
         {
-          "question": "What is the capital of Italy?",
-          "answer": "Rome"
-        },
-        {
-          "question": "What is the capital of Germany?",
-          "answer": "Berlin"
+            "title": "",
+            "description": "",
+            "tags": "",
+            "flashcards": [
+                {
+                    "question": null,
+                    "answer": null
+                }
+            ],
+            "id": "41b2d9d6-9d55-4d65-8cd7-7de407b827c9"
         }
-      ],
-      "id": "d19fcd00-cc71-41e2-b42e-19ccbeefae6e"
-    },
-    {
-      "title": "Do",
-      "description": "Overwrite",
-      "tags": "Not",
-      "flashcards": [
-        {
-          "question": "Please",
-          "answer": "Begging"
-        },
-        {
-          "question": "You",
-          "answer": "lot"
-        },
-        {
-          "question": null,
-          "answer": null
-        }
-      ],
-      "id": "13ab9457-216b-40aa-818b-8d05db1e3ebc"
-    },
-    {
-      "title": "sunky",
-      "description": "wanky",
-      "tags": "gunky",
-      "flashcards": [
-        {
-          "question": "mumpy",
-          "answer": "cypy"
-        },
-        {
-          "question": null,
-          "answer": null
-        }
-      ],
-      "id": "de229a5e-b9a4-4812-8ac7-dbd8ef5b79ca"
-    },
-    {
-      "title": "",
-      "description": "",
-      "tags": "",
-      "flashcards": [
-        {
-          "question": null,
-          "answer": null
-        }
-      ],
-      "id": "41b2d9d6-9d55-4d65-8cd7-7de407b827c9"
-    }
-  ]
+    ]
 }

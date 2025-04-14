@@ -1,7 +1,8 @@
-from PySide6.QtWidgets import QApplication, QWidget, QHBoxLayout, QTextEdit, QGraphicsDropShadowEffect
-from PySide6.QtCore import Qt, QMargins
+
 from PySide6 import QtWidgets as qtw
 from PySide6 import QtCore as qtc
+from PySide6 import QtGui as qtg
+from PySide6.QtCore import Qt
 
 from typing import Collection
 
@@ -20,13 +21,13 @@ class NamedField(qtw.QWidget):
         layout.addWidget(qtw.QLabel(name))
         layout.addWidget(field, 1)
         
-class ShadowedWidget(QWidget):
+class ShadowedWidget(qtw.QWidget):
     def __init__(self, widget, parent=None):
         """Adds a shadow to the widget"""
         super().__init__(parent)
         
         # Apply the shadow effect to this widget
-        shadow_effect = QGraphicsDropShadowEffect(self)
+        shadow_effect = qtw.QGraphicsDropShadowEffect(self)
         shadow_effect.setOffset(0, 3)
         shadow_effect.setBlurRadius(20)
         shadow_effect.setColor(Qt.gray)
@@ -34,21 +35,20 @@ class ShadowedWidget(QWidget):
         widget.setGraphicsEffect(shadow_effect)
         
         # Set the layout for the widget
-        layout = QHBoxLayout()
+        layout = qtw.QHBoxLayout()
         self.setLayout(layout)
         layout.addWidget(widget)
 
-class TightenedButtons(QWidget):
-    def __init__(self, buttons: Collection[str]):
+class ButtonGroup(qtw.QWidget):
+    def __init__(self, button_names: Collection[str], set_name=True):
         super().__init__()
         self.buttons = dict()
 
         layout = qtw.QHBoxLayout()
         self.setLayout(layout)
 
-
-        for name in buttons:
-           self.add_button(name)
+        for name in button_names:
+           self.add_button(name, set_name)
 
         
     def __getattribute__(self, name):
@@ -59,15 +59,18 @@ class TightenedButtons(QWidget):
             return buttons[name]
         return super().__getattribute__(name)
 
-    def add_button(self, name):
+    def add_button(self, name, set_name=True):
         """Adds a button to the layout"""
-        button = qtw.QPushButton(name)
+        if set_name:
+            button = qtw.QPushButton(name)
+        else:
+            button = qtw.QPushButton()
         self.buttons[name] = button
         button.setObjectName(name)
         self.layout().addWidget(button)
 
 if __name__ == '__main__':
     app = qtw.QApplication([])
-    but = TightenedButtons(['one', 'two', 'three'])
+    but = ButtonGroup(['one', 'two', 'three'])
     but.add_button('new')
     print(but.buttons)

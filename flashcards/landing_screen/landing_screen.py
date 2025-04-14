@@ -7,12 +7,11 @@ from functools import partial
 import sys
 import os
 
+from flashcards.widgets import ButtonGroup
+from flashcards.storage import load_sets, FILENAME
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
-print('cwd', os.getcwd())
-print('-', *sys.path, '-', sep='\n')
-
-from flashcards.storage import load_sets, FILENAME
 
 class LandingScreen(qtw.QWidget):
     def __init__(self, mw, *args):
@@ -31,11 +30,12 @@ class LandingScreen(qtw.QWidget):
         self.title = qtw.QLabel('FlashCards')
         self.title.setObjectName('title')
         
-        self.cards = qtw.QTableWidget(1, 5)
-        self.populate_table()
+        self.cards = qtw.QTableWidget(0, 5)
+
         self.cards.setObjectName('sets')
         self.cards.setHorizontalHeaderLabels(['Title', 'Card count', 'Description', 'Tags', 'Open'])
         self.cards.horizontalHeader().setSectionResizeMode(qtw.QHeaderView.Stretch)
+        self.populate_table()
         self.add_button = qtw.QPushButton('Add Card')
         self.add_button.setObjectName('add_button')
     
@@ -51,32 +51,32 @@ class LandingScreen(qtw.QWidget):
 
     def populate_table(self):
         """Populate the table from a file"""
-        sets = load_sets(FILENAME)
-        self.cards.setRowCount(len(sets))
-        for row, set in enumerate(sets):
-            *set, id = set
-            for col, item in enumerate(set):
-                item = qtw.QTableWidgetItem(item)
-                item.setFlags(item.flags() & ~qtc.Qt.ItemIsEditable)
-                self.cards.setItem(row, col, qtw.QTableWidgetItem(item))
-            edit_button = qtw.QPushButton('Edit')
-            edit_button.pressed.connect(partial(self.switch, id))
-            self.cards.setCellWidget(row, 4, edit_button)
+        for card_set in load_sets(FILENAME):
+            *values, id = card_set
+            self.add_row(id, *values)
     
     def switch(self, id):
         """Switch the central widget"""
         self.mw.switch_widget(id)
     
-    def add_row(self):
+    def add_row(self, id=None, *values):
         """Add a row to the table"""
-        row_idx = self.cards.rowCount()
-        self.cards.insertRow(row_idx)
-        self.cards.setRowHeight(row_idx, 75)
-        for col in range(self.cards.columnCount()):
-            self.cards.setItem(row_idx, col, qtw.QTableWidgetItem(''))
-            edit_button = qtw.QPushButton('Edit')
-            edit_button.pressed.connect(partial(self.switch, None))
-            self.cards.setCellWidget(row_idx, 4, edit_button)
+
+        last_idx = self.cards.rowCount()
+        self.cards.insertRow(last_idx)
+        self.cards.setRowHeight(last_idx, 75)
+        for col, item in enumerate(values):
+            item = qtw.QTableWidgetItem(item)
+            item.setFlags(item.flags() & ~qtc.Qt.ItemIsEditable)
+            self.cards.setItem(last_idx, col, item)
+        
+        edit_buttons = ButtonGroup(['delete', 'edit', 'play'], set_name=False)
+        edit_buttons.edit.setIcon(qtg.QIcon('assets/pencil.svg'))
+        edit_buttons.delete.setIcon(qtg.QIcon('assets/trash.svg'))
+        edit_buttons.play.setIcon(qtg.QIcon('assets/play.svg'))
+        edit_buttons.edit.pressed.connect(partial(self.switch, id))
+
+        self.cards.setCellWidget(last_idx, 4, edit_buttons)
 
 if __name__ == '__main__':
     import sys
