@@ -35,7 +35,6 @@ class LandingScreen(qtw.QWidget):
         self.populate_table()
         self.cards.setObjectName('sets')
         self.cards.setHorizontalHeaderLabels(['Title', 'Card count', 'Description', 'Tags', 'Open'])
-        self.cards.setRowHeight(0, 50)
         self.cards.horizontalHeader().setSectionResizeMode(qtw.QHeaderView.Stretch)
         self.add_button = qtw.QPushButton('Add Card')
         self.add_button.setObjectName('add_button')
@@ -57,6 +56,8 @@ class LandingScreen(qtw.QWidget):
         for row, set in enumerate(sets):
             *set, id = set
             for col, item in enumerate(set):
+                item = qtw.QTableWidgetItem(item)
+                item.setFlags(item.flags() & ~qtc.Qt.ItemIsEditable)
                 self.cards.setItem(row, col, qtw.QTableWidgetItem(item))
             edit_button = qtw.QPushButton('Edit')
             edit_button.pressed.connect(partial(self.switch, id))
@@ -70,7 +71,7 @@ class LandingScreen(qtw.QWidget):
         """Add a row to the table"""
         row_idx = self.cards.rowCount()
         self.cards.insertRow(row_idx)
-        self.cards.setRowHeight(row_idx, 50)
+        self.cards.setRowHeight(row_idx, 75)
         for col in range(self.cards.columnCount()):
             self.cards.setItem(row_idx, col, qtw.QTableWidgetItem(''))
             edit_button = qtw.QPushButton('Edit')
