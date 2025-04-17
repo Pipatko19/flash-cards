@@ -65,16 +65,20 @@
             "id": "de229a5e-b9a4-4812-8ac7-dbd8ef5b79ca"
         },
         {
-            "title": "",
-            "description": "",
-            "tags": "",
+            "title": "Hello from space",
+            "description": "same as you and me",
+            "tags": "tagline: a pretty wide space",
             "flashcards": [
+                {
+                    "question": "bombar",
+                    "answer": "footbal"
+                },
                 {
                     "question": null,
                     "answer": null
                 }
             ],
-            "id": "41b2d9d6-9d55-4d65-8cd7-7de407b827c9"
+            "id": "1d35be1d-b6c9-4f19-9177-9c6088c11d51"
         }
     ]
 }

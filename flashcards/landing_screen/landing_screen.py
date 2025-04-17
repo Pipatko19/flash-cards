@@ -8,7 +8,7 @@ import sys
 import os
 
 from flashcards.widgets import ButtonGroup
-from flashcards.storage import load_sets, FILENAME
+from flashcards.storage import load_sets, FILENAME, remove_set
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
@@ -34,6 +34,7 @@ class LandingScreen(qtw.QWidget):
 
         self.cards.setObjectName('sets')
         self.cards.setHorizontalHeaderLabels(['Title', 'Card count', 'Description', 'Tags', 'Open'])
+        self.cards.setSelectionMode(qtw.QAbstractItemView.NoSelection)
         self.cards.horizontalHeader().setSectionResizeMode(qtw.QHeaderView.Stretch)
         self.populate_table()
         self.add_button = qtw.QPushButton('Add Card')
@@ -55,13 +56,32 @@ class LandingScreen(qtw.QWidget):
             *values, id = card_set
             self.add_row(id, *values)
     
-    def switch(self, id):
+    def switch(self):
         """Switch the central widget"""
+        id = self.sender().property('id')
+        print(id, 'YESDDF')
         self.mw.switch_widget(id)
-    
+
+    def remove_row(self):
+        """Remove a row from the table and the file"""
+        id = self.sender().property('id')
+        for row in range(self.cards.rowCount()):
+            item = self.cards.cellWidget(row, 4)
+            if item and item.property('id') == id:
+                result = qtw.QMessageBox.warning(
+                    self, 
+                    'Delete set', 
+                    'Are you sure you want to delete this set?', 
+                    qtw.QMessageBox.Yes | qtw.QMessageBox.No
+                )
+                if result == qtw.QMessageBox.Yes:
+                    self.cards.removeRow(row)
+                    remove_set(FILENAME, id)
+                break
+        
+
     def add_row(self, id=None, *values):
         """Add a row to the table"""
-
         last_idx = self.cards.rowCount()
         self.cards.insertRow(last_idx)
         self.cards.setRowHeight(last_idx, 75)
@@ -71,10 +91,12 @@ class LandingScreen(qtw.QWidget):
             self.cards.setItem(last_idx, col, item)
         
         edit_buttons = ButtonGroup(['delete', 'edit', 'play'], set_name=False)
+        edit_buttons.setProperty('id', id)
         edit_buttons.edit.setIcon(qtg.QIcon('assets/pencil.svg'))
         edit_buttons.delete.setIcon(qtg.QIcon('assets/trash.svg'))
         edit_buttons.play.setIcon(qtg.QIcon('assets/play.svg'))
-        edit_buttons.edit.pressed.connect(partial(self.switch, id))
+        edit_buttons.edit.pressed.connect(self.switch)
+        edit_buttons.delete.pressed.connect(self.remove_row)
 
         self.cards.setCellWidget(last_idx, 4, edit_buttons)
 

@@ -68,7 +68,11 @@ class ButtonGroup(qtw.QWidget):
         self.buttons[name] = button
         button.setObjectName(name)
         self.layout().addWidget(button)
-
+        
+    def setProperty(self, name, value):
+        super().setProperty(name, value)
+        for button in self.buttons.values():
+            button.setProperty(name, value)
 if __name__ == '__main__':
     app = qtw.QApplication([])
     but = ButtonGroup(['one', 'two', 'three'])
