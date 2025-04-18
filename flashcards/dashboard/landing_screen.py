@@ -17,9 +17,7 @@ class LandingScreen(qtw.QWidget):
     def __init__(self, mw, *args):
         """Landing screen for the application"""
         super().__init__(*args)
-        self.setWindowTitle('FlashCards')
-        self.setGeometry(qtc.QRect(0, 0, 756, 538))
-        
+
         self.mw = mw
         
         self._init_widgets()
@@ -27,28 +25,28 @@ class LandingScreen(qtw.QWidget):
 
     def _init_widgets(self):
         """Widget creation"""
-        self.title = qtw.QLabel('FlashCards')
-        self.title.setObjectName('title')
+        self.lblTitle = qtw.QLabel('FlashCards')
+        self.lblTitle.setObjectName('lblTitle')
         
-        self.cards = qtw.QTableWidget(0, 5)
+        self.tblCards = qtw.QTableWidget(0, 5)
 
-        self.cards.setObjectName('sets')
-        self.cards.setHorizontalHeaderLabels(['Title', 'Card count', 'Description', 'Tags', 'Open'])
-        self.cards.setSelectionMode(qtw.QAbstractItemView.NoSelection)
-        self.cards.horizontalHeader().setSectionResizeMode(qtw.QHeaderView.Stretch)
+        self.tblCards.setObjectName('sets')
+        self.tblCards.setHorizontalHeaderLabels(['title', 'Card count', 'Description', 'Tags', 'Open'])
+        self.tblCards.setSelectionMode(qtw.QAbstractItemView.NoSelection)
+        self.tblCards.horizontalHeader().setSectionResizeMode(qtw.QHeaderView.Stretch)
         self.populate_table()
-        self.add_button = qtw.QPushButton('Add Card')
-        self.add_button.setObjectName('add_button')
+        self.btnAdd = qtw.QPushButton('Add Card')
+        self.btnAdd.setObjectName('add_button')
     
-        self.add_button.pressed.connect(self.add_row)
+        self.btnAdd.pressed.connect(self.add_row)
 
     def _init_layouts(self):
         layout = qtw.QVBoxLayout()
         self.setLayout(layout)
         #layout.setAlignment(Qt.AlignTop)
-        layout.addWidget(self.title, 0, Qt.AlignTop | Qt.AlignHCenter)
-        layout.addWidget(self.cards, 1)
-        layout.addWidget(self.add_button, 0, qtc.Qt.AlignBottom)
+        layout.addWidget(self.lblTitle, 0, Qt.AlignTop | Qt.AlignHCenter)
+        layout.addWidget(self.tblCards, 1)
+        layout.addWidget(self.btnAdd, 0, qtc.Qt.AlignBottom)
 
     def populate_table(self):
         """Populate the table from a file"""
@@ -59,14 +57,13 @@ class LandingScreen(qtw.QWidget):
     def switch(self):
         """Switch the central widget"""
         id = self.sender().property('id')
-        print(id, 'YESDDF')
-        self.mw.switch_widget(id)
+        self.mw.switch_to_settings(id)
 
     def remove_row(self):
         """Remove a row from the table and the file"""
         id = self.sender().property('id')
-        for row in range(self.cards.rowCount()):
-            item = self.cards.cellWidget(row, 4)
+        for row in range(self.tblCards.rowCount()):
+            item = self.tblCards.cellWidget(row, 4)
             if item and item.property('id') == id:
                 result = qtw.QMessageBox.warning(
                     self, 
@@ -75,20 +72,20 @@ class LandingScreen(qtw.QWidget):
                     qtw.QMessageBox.Yes | qtw.QMessageBox.No
                 )
                 if result == qtw.QMessageBox.Yes:
-                    self.cards.removeRow(row)
+                    self.tblCards.removeRow(row)
                     remove_set(FILENAME, id)
                 break
         
 
     def add_row(self, id=None, *values):
         """Add a row to the table"""
-        last_idx = self.cards.rowCount()
-        self.cards.insertRow(last_idx)
-        self.cards.setRowHeight(last_idx, 75)
+        last_idx = self.tblCards.rowCount()
+        self.tblCards.insertRow(last_idx)
+        self.tblCards.setRowHeight(last_idx, 75)
         for col, item in enumerate(values):
             item = qtw.QTableWidgetItem(item)
             item.setFlags(item.flags() & ~qtc.Qt.ItemIsEditable)
-            self.cards.setItem(last_idx, col, item)
+            self.tblCards.setItem(last_idx, col, item)
         
         edit_buttons = ButtonGroup(['delete', 'edit', 'play'], set_name=False)
         edit_buttons.setProperty('id', id)
@@ -98,7 +95,7 @@ class LandingScreen(qtw.QWidget):
         edit_buttons.edit.pressed.connect(self.switch)
         edit_buttons.delete.pressed.connect(self.remove_row)
 
-        self.cards.setCellWidget(last_idx, 4, edit_buttons)
+        self.tblCards.setCellWidget(last_idx, 4, edit_buttons)
 
 if __name__ == '__main__':
     import sys

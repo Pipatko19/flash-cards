@@ -4,6 +4,8 @@ __pycache__/
 *$py.class
 
 test.py
+.vscode
+true_flashcards.code-workspace
 
 # C extensions
 *.so

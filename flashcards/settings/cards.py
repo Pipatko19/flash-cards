@@ -127,7 +127,11 @@ class ScrollableGroupBox(qtw.QWidget):
             
     def populate(self, data: list[dict[str, str]]):
         """Populate the card with data"""
-        print('-----data-----', *data, '--------------', sep='\n')
+        print('-----data-----')
+        for d in data:
+            for key, value in d.items():
+                print(f'{key + ':':<9} {str(value)}')
+        print('--------------')
         for row in range(len(data)):
             self.add_card()
         self.model.overwrite_data(data)
@@ -139,17 +143,6 @@ class ScrollableGroupBox(qtw.QWidget):
             card.back_input.setPlainText(data[idx]['answer'])
             card.blockSignals(False)
         self._outer_container.setTitle(f'Card count: {len(self.textedits)}')
-
-    # def keyPressEvent(self, event):
-    #     if event.key() == Qt.Key_Tab:
-    #         print('heloo')
-    #         focused_card = QApplication.focusWidget()
-    #         if focused_card in self.textedits:
-    #             print('fuck yeah')
-    #             cur_idx = self.textedits.index(focused_card)
-    #             self.textedits[cur_idx + 1].setFocus()
-    #     else:
-    #         return super().keyPressEvent(event)
     
 if __name__ == "__main__":
     app = QApplication([])
