@@ -34,8 +34,8 @@ class CardWidget(QWidget):
 
 
         # Create ShadowedWidget containers for both front and back
-        front_input_widget = ShadowedWidget(self.front_input)
-        back_input_widget = ShadowedWidget(self.back_input)
+        front_input_widget = ShadowedWidget(self.front_input, offset=(0, 3))
+        back_input_widget = ShadowedWidget(self.back_input, offset=(0, 3))
 
         self.front_input.textChanged.connect(self._emit_front_text_changed)
         self.back_input.textChanged.connect(self._emit_back_text_changed)

@@ -5,6 +5,7 @@ import sys
 
 from flashcards.settings.settings import Settings
 from flashcards.dashboard.landing_screen import LandingScreen
+from flashcards.card_set.card_set import FlashCards
 
 class MainWindow(qtw.QMainWindow):
     def __init__(self):
@@ -20,6 +21,11 @@ class MainWindow(qtw.QMainWindow):
     def switch_to_landing_screen(self):
         """Switch the central widget to landing screen"""
         self.setCentralWidget(LandingScreen(self))
+    def switch_to_flashcards(self, id=None):
+        """Switch the central widget to flashcards"""
+        self.resize(828, 478)
+        self.setCentralWidget(FlashCards(self, id))
+        
 
 
 
@@ -27,11 +33,16 @@ class MainWindow(qtw.QMainWindow):
 if __name__ == '__main__':
     app = qtw.QApplication(sys.argv)
     
+    qtg.QFontDatabase.addApplicationFont('assets/AbyssinicaSIL.ttf')
     #style
     with open('style.qss', 'r') as f:
         _style = f.read()
-    app.setStyleSheet(_style)
+
     
+
+    app.setStyleSheet(_style)
+
     mw = MainWindow()
+    mw.show()
     sys.exit(app.exec())
 

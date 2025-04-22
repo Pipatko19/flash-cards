@@ -22,13 +22,13 @@ class NamedField(qtw.QWidget):
         layout.addWidget(field, 1)
         
 class ShadowedWidget(qtw.QWidget):
-    def __init__(self, widget, parent=None):
+    def __init__(self, widget, parent=None, offset=(0, 0)):
         """Adds a shadow to the widget"""
         super().__init__(parent)
         
         # Apply the shadow effect to this widget
         shadow_effect = qtw.QGraphicsDropShadowEffect(self)
-        shadow_effect.setOffset(0, 3)
+        shadow_effect.setOffset(*offset)
         shadow_effect.setBlurRadius(20)
         shadow_effect.setColor(Qt.gray)
         
