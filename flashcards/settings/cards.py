@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QApplication, QWidget, QHBoxLayout, QTextEdit, QGraphicsDropShadowEffect
+from PySide6.QtWidgets import QApplication, QWidget, QHBoxLayout, QTextEdit
 from PySide6.QtCore import Qt, QMargins
 from PySide6 import QtWidgets as qtw
 from PySide6 import QtCore as qtc

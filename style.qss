@@ -114,6 +114,18 @@ QLabel#flashcards {
         stop: 1 #CFFFED
     );
 }
+
+QLabel QLabel {
+    background-color: transparent; /* Avoid blending */
+    color: #0f3460;
+}
+
+QLabel#flash-title {
+    font-size: 20px;
+    font-weight: bolder;
+    margin-right: -50px;
+}
+
 QLabel#card {
     background-color: #FFFFFF; /* Light blue background */
     color: #003366; /* Dark blue text */

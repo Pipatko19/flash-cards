@@ -1,11 +1,13 @@
-from PySide6 import QtWidgets as qtw
+
 from PySide6 import QtCore as qtc
-from PySide6 import QtGui as qtg
 from PySide6.QtCore import Qt
 
+IndexType = qtc.QModelIndex | qtc.QPersistentModelIndex
+
+
 class FlashCardsModel(qtc.QAbstractListModel):
-    QUESTION_ROLE = Qt.UserRole + 1
-    ANSWER_ROLE = Qt.UserRole + 2
+    QUESTION_ROLE = Qt.ItemDataRole.UserRole + 1
+    ANSWER_ROLE = Qt.ItemDataRole.UserRole + 2
     def __init__(self, *args,**kwargs):
         super().__init__(*args, **kwargs)
         self.flashcards = []
@@ -17,16 +19,18 @@ class FlashCardsModel(qtc.QAbstractListModel):
     def rowCount(self, parent = None):
         return len(self.flashcards)
     
-    def data(self, index: qtc.QModelIndex, role: Qt.ItemDataRole) -> str:
+    def data(self, index: IndexType, role: int = Qt.ItemDataRole.DisplayRole) -> str | None:
         if not index.isValid():
             return None
         row = index.row()
-        if role == qtc.Qt.DisplayRole or role == FlashCardsModel.QUESTION_ROLE:
+        if role == Qt.ItemDataRole.DisplayRole or role == FlashCardsModel.QUESTION_ROLE:
             return self.flashcards[row]['question']
         if role == FlashCardsModel.ANSWER_ROLE:
             return self.flashcards[row]['question']
+        
+        return None
     
-    def setData(self, index: qtc.QModelIndex, value: str, role: int) -> bool:
+    def setData(self, index: IndexType, value: str, role: int = Qt.ItemDataRole.DisplayRole) -> bool:
         card = self.flashcards[index.row()]
 
         match role:
@@ -40,19 +44,23 @@ class FlashCardsModel(qtc.QAbstractListModel):
         #print(*(card.values() for card in self.flashcards), sep='\n')
         return True
 
-    def removeRow(self, row, parent = None):
-        row -= 1
-        if 0 <= row < len(self.flashcards):
-            self.beginRemoveRows(qtc.QModelIndex(), row, row)
+    def removeRows(self, row: int, count: int, parent = qtc.QModelIndex()):
+        if row < 0 or row + count > len(self.flashcards):
+            return False
+        self.beginRemoveRows(qtc.QModelIndex(), row, row + count - 1)
+        for _ in range(count):
             del self.flashcards[row]
-            self.endRemoveRows()
-            return True
-        return False
+        self.endRemoveRows()
+        return True
 
-    def insertRow(self, row, parent = None):
-        self.beginInsertRows(qtc.QModelIndex(), row, row)
-        self.flashcards.append({'question': None, 'answer': None})
+    def insertRows(self, row: int, count: int, parent = qtc.QModelIndex()):
+        if row != self.rowCount() or count <= 0 or parent.isValid():
+            return False
+        self.beginInsertRows(qtc.QModelIndex(), row, row + count - 1)
+        for _ in range(count):        
+            self.flashcards.append({'question': None, 'answer': None})
         self.endInsertRows()
+        return True
 
     def overwrite_data(self, data):
         self.beginResetModel()

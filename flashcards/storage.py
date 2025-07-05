@@ -3,7 +3,7 @@ import uuid
 
 FILENAME = 'flashcards.json'
 
-def get_data(filename):
+def get_data(filename) -> list[dict]:
     """Read 'sets' data from the given JSON file."""
     try:
         with open(filename, 'r', encoding='utf-8') as file:
@@ -12,13 +12,15 @@ def get_data(filename):
         print(f"Error reading {filename}: {e}")
         return []
     
-def save_data(filename, sets):
+def save_data(filename, sets: list[dict]) -> bool:
     """Save all sets data to the given JSON file."""
     try:
         with open(filename, 'w', encoding='utf-8') as file:
             json.dump({'sets': sets}, file, ensure_ascii=False, indent=4)
+            return True
     except IOError as e:
         print(f"Error saving to {filename}: {e}")
+        return False
         
 def save_to_file(filename, **items):
     """Save a set to a JSON file."""
@@ -34,29 +36,29 @@ def save_to_file(filename, **items):
 
     save_data(filename, data)
 
-def load_sets(filename):
+def load_sets(filename) -> list[tuple[str]]:
     """Load names from a JSON file"""
     data = get_data(filename)
     sets = []
-    for set in data:
-        count = str(len(set['flashcards']))
-        sets.append((set['title'], count, set['description'], set['tags'], set['id']))
+    for item in data:
+        count = str(len(item['flashcards']))
+        sets.append((item['title'], count, item['description'], item['tags'], item['id']))
     return sets
 
-def get_set_by_id(filename, id):
+def get_set_by_id(filename, id: int | str) -> dict:
     """Get a set by its ID from the JSON file."""
     data = get_data(filename)
-    for set in data:
-        if set.get('id') == id:
-            return set
+    for item in data:
+        if item.get('id') == id:
+            return item
     raise ValueError(f'Set with id {id} not found in {data}')
 
 def remove_set(filename, id):
     """Remove a set by its ID from the JSON file."""
     data = get_data(filename)
-    set = get_set_by_id(filename, id)
-    data.remove(set)
+    item = get_set_by_id(filename, id)
+    data.remove(item)
     save_data(filename, data)
 
 if __name__ == '__main__':
-    print(get_set_by_id(FILENAME, "279fd33c-e33e-49e1-a08e-1811ecd18636"))
+    print(get_set_by_id(FILENAME, "d19fcd00-cc71-41e2-b42e-19ccbeefae6e"))

@@ -3,11 +3,7 @@ from PySide6 import QtCore as qtc
 from PySide6 import QtGui as qtg
 from PySide6.QtCore import Qt
 
-from functools import partial
 import sys
-import os
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
 from flashcards.widgets import ButtonGroup
 from flashcards.storage import load_sets, FILENAME, remove_set
@@ -31,9 +27,11 @@ class LandingScreen(qtw.QWidget):
 
         self.tbl_cards.setObjectName('sets')
         self.tbl_cards.setHorizontalHeaderLabels(['title', 'Card count', 'Description', 'Tags', 'Open'])
-        self.tbl_cards.setSelectionMode(qtw.QAbstractItemView.NoSelection)
-        self.tbl_cards.horizontalHeader().setSectionResizeMode(qtw.QHeaderView.Stretch)
+        self.tbl_cards.setSelectionMode(qtw.QAbstractItemView.SelectionMode.NoSelection)
+        self.tbl_cards.horizontalHeader().setSectionResizeMode(qtw.QHeaderView.ResizeMode.Stretch)
+        
         self.populate_table()
+        
         self.btn_add = qtw.QPushButton('Add Card')
         self.btn_add.setObjectName('add_button')
     
@@ -42,10 +40,10 @@ class LandingScreen(qtw.QWidget):
     def _init_layouts(self):
         layout = qtw.QVBoxLayout()
         self.setLayout(layout)
-        #layout.setAlignment(Qt.AlignTop)
-        layout.addWidget(self.lbl_title, 0, Qt.AlignTop | Qt.AlignHCenter)
+        
+        layout.addWidget(self.lbl_title, 0, Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
         layout.addWidget(self.tbl_cards, 1)
-        layout.addWidget(self.btn_add, 0, qtc.Qt.AlignBottom)
+        layout.addWidget(self.btn_add, 0, Qt.AlignmentFlag.AlignBottom)
 
     def populate_table(self):
         """Populate the table from a file"""
@@ -53,11 +51,13 @@ class LandingScreen(qtw.QWidget):
             *values, id = card_set
             self.add_row(id, *values)
     
+    @qtc.Slot()
     def switch(self):
         """Switch the central widget"""
         id = self.sender().property('id')
         self.mw.switch_to_settings(id)
     
+    @qtc.Slot()
     def play(self):
         id = self.sender().property('id')
         self.mw.switch_to_flashcards(id)
@@ -72,9 +72,9 @@ class LandingScreen(qtw.QWidget):
                     self, 
                     'Delete set', 
                     'Are you sure you want to delete this set?', 
-                    qtw.QMessageBox.Yes | qtw.QMessageBox.No
+                    qtw.QMessageBox.StandardButton.Yes | qtw.QMessageBox.StandardButton.No
                 )
-                if result == qtw.QMessageBox.Yes:
+                if result == qtw.QMessageBox.StandardButton.Yes:
                     self.tbl_cards.removeRow(row)
                     remove_set(FILENAME, id)
                 break
@@ -87,7 +87,7 @@ class LandingScreen(qtw.QWidget):
         self.tbl_cards.setRowHeight(last_idx, 75)
         for col, item in enumerate(values):
             item = qtw.QTableWidgetItem(item)
-            item.setFlags(item.flags() & ~qtc.Qt.ItemIsEditable)
+            item.setFlags(item.flags() & ~qtc.Qt.ItemFlag.ItemIsEditable)
             self.tbl_cards.setItem(last_idx, col, item)
         
         edit_buttons = ButtonGroup(['delete', 'edit', 'play'], set_name=False)

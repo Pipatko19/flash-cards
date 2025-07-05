@@ -18,8 +18,8 @@ class Settings(qtw.QWidget):
         #resize options
         self.txt_title.setMinimumSize(300, self.txt_title.sizeHint().height())
         self.txt_tags.setMinimumSize(300, self.txt_tags.sizeHint().height())
-        self.txt_title.setSizePolicy(qtw.QSizePolicy.Preferred, qtw.QSizePolicy.Fixed)
-        self.txt_tags.setSizePolicy(qtw.QSizePolicy.Preferred, qtw.QSizePolicy.Fixed)
+        self.txt_title.setSizePolicy(qtw.QSizePolicy.Policy.Preferred, qtw.QSizePolicy.Policy.Fixed)
+        self.txt_tags.setSizePolicy(qtw.QSizePolicy.Policy.Preferred, qtw.QSizePolicy.Policy.Fixed)
         
         self.load_from_json(id)
         
@@ -60,8 +60,8 @@ class Settings(qtw.QWidget):
         main_layout.addWidget(self.txt_title, 0, 0)
         main_layout.addWidget(self.txt_tags, 1, 0)
         main_layout.addWidget(self.txt_description, 0, 2, 2, 1)
-        main_layout.addWidget(self.btn_json, 2, 0, qtc.Qt.AlignLeft)
-        main_layout.addWidget(self.btn_save, 2, 2, qtc.Qt.AlignRight)
+        main_layout.addWidget(self.btn_json, 2, 0, qtc.Qt.AlignmentFlag.AlignLeft)
+        main_layout.addWidget(self.btn_save, 2, 2, qtc.Qt.AlignmentFlag.AlignRight)
         main_layout.addWidget(self.grp_cards, 3, 0, 1, 3)
         
     def save_settings(self):

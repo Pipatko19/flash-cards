@@ -15,15 +15,17 @@ class MainWindow(qtw.QMainWindow):
         self.setGeometry(qtc.QRect(0, 0, 756, 538)) #size not really important
         self.setCentralWidget(LandingScreen(self))
         self.show()
+        
     def switch_to_settings(self, id=None):
         """Switch the central widget to settings"""
         self.setCentralWidget(Settings(self, id))
+        
     def switch_to_landing_screen(self):
         """Switch the central widget to landing screen"""
         self.setCentralWidget(LandingScreen(self))
+        
     def switch_to_flashcards(self, id=None):
         """Switch the central widget to flashcards"""
-        self.resize(828, 478)
         self.setCentralWidget(FlashCards(self, id))
         
 
